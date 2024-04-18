@@ -87,82 +87,83 @@ parser.add_argument('--temperature', type=float, default=0.2, help='temperature'
 parser.add_argument('--masked_rule', type=str, default='geometric', help='geometric, random, masked tail, masked head')
 parser.add_argument('--mask_rate', type=float, default=0.5, help='mask ratio')
 
-args = parser.parse_args()
-args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
+if __name__=="__main__":
+    args = parser.parse_args()
+    args.use_gpu = True if torch.cuda.is_available() and args.use_gpu else False
 
-if args.use_gpu and args.use_multi_gpu:
-    args.devices = args.devices.replace(' ', '')
-    device_ids = args.devices.split(',')
-    args.device_ids = [int(id_) for id_ in device_ids]
+    if args.use_gpu and args.use_multi_gpu:
+        args.devices = args.devices.replace(' ', '')
+        device_ids = args.devices.split(',')
+        args.device_ids = [int(id_) for id_ in device_ids]
 
-print('Args in experiment:')
-print(args)
+    print('Args in experiment:')
+    print(args)
 
-Exp = Exp_SimMTM
-if args.task_name == 'pretrain':
-    for ii in range(args.itr):
-        # setting record of experiments
-        setting = '{}_{}_{}_{}_sl{}_ll{}_pl{}_dm{}_df{}_nh{}_el{}_dl{}_fc{}_dp{}_hdp{}_ep{}_bs{}_lr{}_lm{}_pn{}_mr{}_tp{}'.format(
-            args.task_name,
-            args.model,
-            args.data,
-            args.features,
-            args.seq_len,
-            args.label_len,
-            args.pred_len,
-            args.d_model,
-            args.d_ff,
-            args.n_heads,
-            args.e_layers,
-            args.d_layers,
-            args.factor,
-            args.dropout,
-            args.head_dropout,
-            args.train_epochs,
-            args.batch_size,
-            args.learning_rate,
-            args.lm,
-            args.positive_nums,
-            args.mask_rate,
-            args.temperature
-        )
+    Exp = Exp_SimMTM
+    if args.task_name == 'pretrain':
+        for ii in range(args.itr):
+            # setting record of experiments
+            setting = '{}_{}_{}_{}_sl{}_ll{}_pl{}_dm{}_df{}_nh{}_el{}_dl{}_fc{}_dp{}_hdp{}_ep{}_bs{}_lr{}_lm{}_pn{}_mr{}_tp{}'.format(
+                args.task_name,
+                args.model,
+                args.data,
+                args.features,
+                args.seq_len,
+                args.label_len,
+                args.pred_len,
+                args.d_model,
+                args.d_ff,
+                args.n_heads,
+                args.e_layers,
+                args.d_layers,
+                args.factor,
+                args.dropout,
+                args.head_dropout,
+                args.train_epochs,
+                args.batch_size,
+                args.learning_rate,
+                args.lm,
+                args.positive_nums,
+                args.mask_rate,
+                args.temperature
+            )
 
-        exp = Exp(args)  # set experiments
-        print('>>>>>>>start pre_training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
-        exp.pretrain()
-        torch.cuda.empty_cache()
+            exp = Exp(args)  # set experiments
+            print('>>>>>>>start pre_training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
+            exp.pretrain()
+            torch.cuda.empty_cache()
 
-elif args.task_name == 'finetune':
-    for ii in range(args.itr):
-        # setting record of experiments
-        setting = '{}_{}_{}_{}_sl{}_ll{}_pl{}_dm{}_df{}_nh{}_el{}_dl{}_fc{}_dp{}_hdp{}_ep{}_bs{}_lr{}'.format(
-            args.task_name,
-            args.model,
-            args.data,
-            args.features,
-            args.seq_len,
-            args.label_len,
-            args.pred_len,
-            args.d_model,
-            args.d_ff,
-            args.n_heads,
-            args.e_layers,
-            args.d_layers,
-            args.factor,
-            args.dropout,
-            args.head_dropout,
-            args.train_epochs,
-            args.batch_size,
-            args.learning_rate
-        )
+    elif args.task_name == 'finetune':
+        for ii in range(args.itr):
+            # setting record of experiments
+            setting = '{}_{}_{}_{}_sl{}_ll{}_pl{}_dm{}_df{}_nh{}_el{}_dl{}_fc{}_dp{}_hdp{}_ep{}_bs{}_lr{}'.format(
+                args.task_name,
+                args.model,
+                args.data,
+                args.features,
+                args.seq_len,
+                args.label_len,
+                args.pred_len,
+                args.d_model,
+                args.d_ff,
+                args.n_heads,
+                args.e_layers,
+                args.d_layers,
+                args.factor,
+                args.dropout,
+                args.head_dropout,
+                args.train_epochs,
+                args.batch_size,
+                args.learning_rate
+            )
 
-        args.load_checkpoints = os.path.join(args.pretrain_checkpoints, args.data, args.transfer_checkpoints)
+            args.load_checkpoints = os.path.join(args.pretrain_checkpoints, args.data, args.transfer_checkpoints)
 
-        exp = Exp(args)  # set experiments
+            exp = Exp(args)  # set experiments
 
-        print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
-        exp.train(setting)
+            print('>>>>>>>start training : {}>>>>>>>>>>>>>>>>>>>>>>>>>>'.format(setting))
+            exp.train(setting)
 
-        print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
-        exp.test()
-        torch.cuda.empty_cache()
+            print('>>>>>>>testing : {}<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<'.format(setting))
+            exp.test()
+            torch.cuda.empty_cache()
