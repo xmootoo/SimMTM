@@ -39,7 +39,7 @@ def run_script(virtual_env, modules, cli_input, script_path, ddp=False):
     if ddp:
         command = f"{load_modules} && {activate_env} && python -u -m torch.distributed.launch --use_env {script_path} {cli_input}"
     else:
-        command = f"{load_modules} && {activate_env} && .{script_path}"
+        command = f"{load_modules} && {activate_env} && {script_path}"
     console.log(f"Run command {command}")
 
 	# Run the command on the Operating System using subprocess.run
@@ -132,7 +132,7 @@ if __name__ == "__main__":
 
     parser.add_argument("--exp_name", type=str, default="main", help="Name of experiment to run")
     parser.add_argument("--mode", type=str, default="pretrain", help="Options: 'pretrain' or 'finetune'")
-    parser.add_argument("--data", tyep=str, default="ETTh1", help="Options: 'ETTh1', 'ETTh2', 'ETTm1', 'ETTm2', 'electricity', 'traffic', or 'weather'")
+    parser.add_argument("--data", type=str, default="ETTh1", help="Options: 'ETTh1', 'ETTh2', 'ETTm1', 'ETTm2', 'electricity', 'traffic', or 'weather'")
     parser.add_argument("--ddp", action=argparse.BooleanOptionalAction, help="Whether to use torch.nn.parallel.DistributedDataParallel")
 
     args = parser.parse_args()
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     cc_config, slurm_config, cli_input = load_configs(args.exp_name)
 
     # Assign total script path
-    cc_config["script_path"] = os.path.join(cc_config["script_path"], args.mode, args.data, ".sh")
+    cc_config["script_path"] = os.path.join(cc_config["script_path"], args.mode, args.data + ".sh")
     cc_config["logdir"] = os.path.join(cc_config["logdir"], args.mode, args.data)
 
     submit_job(cc_config["logdir"],
