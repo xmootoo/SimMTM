@@ -6,7 +6,9 @@ import numpy as np
 import os
 os.environ['CUDA_LAUNCH_BLOCKING'] = '0'
 
-fix_seed = 2023
+
+fix_seed = 1995
+print(f"Random seed: {fix_seed}.")
 random.seed(fix_seed)
 torch.manual_seed(fix_seed)
 np.random.seed(fix_seed)

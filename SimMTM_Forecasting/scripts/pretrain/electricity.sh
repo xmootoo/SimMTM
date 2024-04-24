@@ -21,4 +21,6 @@ python -u run.py \
     --n_heads 16 \
     --batch_size 32 \
     --train_epochs 50 \
-    --temperature 0.02
+    --temperature 0.02 \
+    # --use_multi_gpu \
+    # --devices "0,1,2,3,4,5,6,7"

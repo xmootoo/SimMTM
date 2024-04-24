@@ -16,7 +16,7 @@ unzip Gesture.zip -d datasets/Gesture/
 unzip ECG.zip -d datasets/ECG/
 unzip EMG.zip -d datasets/EMG/
 
-#rm {SleepEEG,Epilepsy,FD-A,FD-B,HAR,Gesture,ECG,EMG}.zip
+rm {SleepEEG,Epilepsy,FD-A,FD-B,HAR,Gesture,ECG,EMG}.zip
 
 
 

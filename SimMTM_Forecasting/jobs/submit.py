@@ -87,7 +87,7 @@ def submit_job(logdir, virtual_env, modules, cli_input, script_path, /, **kwds):
         slurm_mail_user=kwds.get("slurm_mail_user", "xmootoo@gmail.com"),  # Email for notifications
         slurm_mail_type=kwds.get("slurm_mail_type", "ALL"),
         )
-
+    
     # Submit the job
     job = executor.submit(run_script, virtual_env, modules, cli_input, script_path)
     console.log(f"Job submitted: {job.job_id}")
